@@ -26,7 +26,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	operatorv1alpha1 "github.com/gildub/nginx-operator/api/v1alpha1"
-	"github.com/gildub/nginx-operator/assets"
+	myassets "github.com/gildub/nginx-operator/assets"
+
 	appsv1 "k8s.io/api/apps/v1"
 )
 
@@ -64,13 +65,35 @@ func (r *NginxOperatorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, err
 	}
 
+	// // Check if this Deployment already exists
+	// found := &appsv1.Deployment{}
+	// err = r.Get(context.TODO(), types.NamespacedName{Name: instance.Name, Namespace: instance.Namespace}, found)
+	// var result *reconcile.Result
+	// result, err = r.ensureDeployment(req, instance, r.backendDeployment(instance))
+	// if result != nil {
+	// 	log.Error(err, "Deployment Not ready")
+	// 	return *result, err
+	// }
+
+	// // Check if this Service already exists
+	// result, err = r.ensureService(req, instance, r.backendService(instance))
+	// if result != nil {
+	// 	log.Error(err, "Service Not ready")
+	// 	return *result, err
+	// }
+
+	// // Deployment and Service already exists - don't requeue
+	// log.Info("Skip reconcile: Deployment and service already exists",
+	// 	"Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name)
+
 	deployment := &appsv1.Deployment{}
 	create := false
 	err = r.Get(ctx, req.NamespacedName, deployment)
 
 	if err != nil && errors.IsNotFound(err) {
 		create = true
-		deployment = assets.GetDeploymentFromFile("manifests/nginx_deployment.yaml")
+		// deployment = assets.GetDeploymentFromFile("./manifests/nginx_deployment.yaml")
+		deployment = myassets.GetDeploymentFromFile("/home/gildub/github.com/gildub/nginx-operator/assets/manifests/nginx_deployment.yaml")
 	} else if err != nil {
 		logger.Error(err, "Error getting existing Nginx deployment.")
 		return ctrl.Result{}, err
