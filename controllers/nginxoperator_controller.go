@@ -26,7 +26,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	operatorv1alpha1 "github.com/gildub/nginx-operator/api/v1alpha1"
-	assets "github.com/gildub/nginx-operator/assets"
+	"github.com/gildub/nginx-operator/assets"
 	appsv1 "k8s.io/api/apps/v1"
 )
 
